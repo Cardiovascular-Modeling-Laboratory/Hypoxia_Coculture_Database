@@ -662,8 +662,8 @@ filename_table_out = [output_dir '\Data_Locations_Table' time_stamp '.csv'];
 writetable(T,filename_table_out_con);
 writetable(T,filename_table_out);
 
-catch %steps taken if code errors out due to invalid input
-    disp('The code errored out during execution of the script (likely due to an invalid input)'); disp('To avoid loss of previous entries during this run, the output files will be generated after selection of any records that you do not want to use or delete');
+catch ME %steps taken if code errors out due to invalid input
+    disp('The code errored out during execution of the script. A description of the error is provided in the output ME in the workspace.'); disp('To avoid loss of previous entries during this run, the output files will be generated after selection of any records that you do not want to use or delete');
     disp('Press ENTER to continue');
     pause
     Well_ID_Prev = {Well_Data_Loc_Set.WellDataType};
