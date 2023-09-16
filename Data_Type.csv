@@ -1,0 +1,5 @@
+﻿Data_Type_Designator,Description 
+ZLDet,Structural data obtained from z-line detect
+Ndet,Structural data obtained from nuclei detect
+Cont,Contractility data
+Elisa,ELISA assay data 

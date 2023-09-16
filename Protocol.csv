@@ -1,0 +1,10 @@
+﻿Protocol_Designator,Gas_Condition_Designator,O2_Percent,Total_Time,Description
+Norm_D1,Norm,21,1 day,"Normoxia, day 1 control"
+Norm_24h,Norm,21,24 hours,"Normoxia, 24-hour control"
+CH_1h_1O2,CH,1,1 hour,"Continuous hypoxia, 1 hour with 1% O2"
+CH_3h_1O2,CH,1,3 hours,"Continuous hypoxia, 3 hour with 1% O2"
+CH_6h_1O2,CH,1,6 hours,"Continuous hypoxia, 6 hour with 1% O2"
+CH_12h_1O2,CH,1,12 hours,"Continuous hypoxia, 12 hour with 1% O2"
+CH_24h_1O2,CH,1,24 hours,"Continuous hypoxia, 24 hour with 1% O2"
+IH_6h_1O2,IH,1,6 hours,"Intermittent hypoxia, 4 2-minute periods of 1% O2 each hour"
+IH_24h_1O2,IH,1,24 hours,"Intermittent hypoxia, 4 2-minute periods of 1% O2 each hour"

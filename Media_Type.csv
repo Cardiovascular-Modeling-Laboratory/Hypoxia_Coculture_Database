@@ -1,0 +1,7 @@
+﻿Media_Type_Designator,Description,M199,MCSF,IFN-g,IL-4,IL-13,LPS,SerumFree-LowGlucose
+M0,Media to stimulate M0 differentiation from BMDM,1,1,0,0,0,0,0
+M1,Media to stimulate M1 differentiation from BMDM,1,1,1,0,0,0,0
+M2,Media to stimulate M2 differentiation from BMDM,1,1,0,1,1,0,0
+M2star,"Media to stimulate M2 differentiation from BMDM, with inflammatory cytokine secretion",1,1,0,1,1,1,0
+M199,Standard M199 media,1,0,0,0,0,0,0
+M199_SFLG,"Standard M199 media, serum free, no added glucose",1,0,0,0,0,0,1
