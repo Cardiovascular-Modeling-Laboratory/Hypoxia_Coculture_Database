@@ -99,7 +99,7 @@ save(filename_data_out_time,'Well_Data_Set_ZLD') %save as mat file
 T = struct2table(Well_Data_Set_ZLD,"AsArray",true);
 filename_table_out_con = [output_dir '\ZLD_Analysis_Data_Table.csv'];
 filename_table_out = [output_dir '\ZLD_Analysis_Data_Table_' time_stamp '.csv'];
-writetable(T,filename_table_out_con);
 writetable(T,filename_table_out);
+writetable(T,filename_table_out_con);
 
 disp('The code has finished running, and the output files have been saved to the selected directory.')
