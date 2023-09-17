@@ -203,7 +203,7 @@ while record_another_well==1
     if double(isequal(char(Study_Designator(Study_Index)),'Mono')) == 1 %user has selected Mono (monoculture) as the study type
         rows = (Combo_For_Disp.Cell_Designator=='NRVM' | Combo_For_Disp.Cell_Designator=='BMDM'); %find rows with NRVM and BMDM options
         Combo_For_Disp_Mono = Combo_For_Disp(rows,:) %display only NRVM and BMDM as the cell type choices in the table
-        Cell_Index = input('From the list above, \n select the number of the cell type for \n which you are entering data: ');
+        Cell_Index = input('From the list above, select the number of the cell type for which you are entering data: ');
         disp(['Chosen cell type: ' Cell_Designator(Cell_Index)])
     else %user has selected Para (paracrine) or Juxt (juxtacrine) signaling as the study type
         rows = (Combo_For_Disp.Cell_Designator=='NRVM_BMDM'); %find row of table with NRVM_BMDM designator
