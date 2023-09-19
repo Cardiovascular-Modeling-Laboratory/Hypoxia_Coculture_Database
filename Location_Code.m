@@ -291,7 +291,7 @@ while record_another_well==1
             Well_ID_Data =[char(Study_Designator(Study_Index)) '_' char(Media_Designator(Media_Index)) '_' char(Cell_Designator(Cell_Index)) '_' char(NRVM_Count_Designator(NRVM_Count_Index)) '_' char(BMDM_Count_Designator(BMDM_Count_Index)) '_' char(Protocol_Designator(Protocol_Index)) '_' char(Seed_date) '_' char(Well_letter) '_' char(Data_Designator(Data_Index))];
 
             %Clear existing definitions to reset each variable
-            clear Data_Fold_num PathFileVec data_path filename_data check_counter
+            clear Data_Fold_num PathFileVec data_path filename_data check_counter Split_path
 
             %Select file for well data type
             Data_Fold_Well = 0; %initialize
