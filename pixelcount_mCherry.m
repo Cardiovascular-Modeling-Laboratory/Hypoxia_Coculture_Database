@@ -1,11 +1,19 @@
-function [TotalPixels, TotalPixels_AA] = pixelcount_mCherry(CS_results,Drive_letter)
+function [TotalPixels, TotalPixels_AA] = pixelcount_mCherry(CS_results,Drive_letter,CS_path)
 %function to count total number of pixels and alpha-actinin pixels for zline images
 %channel: mCherry
 Folder_path = CS_results.zline_path{1}; %extract folder path of images from CS summary file
 Split_folder_path = split(Folder_path,':');
 Partial_folder_path = Split_folder_path{2}; %folder path without drive letter
 Complete_folder_path = [Drive_letter ':' Partial_folder_path]; %reconstruct path to account for possible changes in drive letters 
+if exist(Complete_folder_path,'dir') == 7
+else %change path to reflect CS summary file path if directory cannot be located
+    clear Partial_folder_path Complete_folder_path
+    Split_CS_path = fileparts(CS_path);
+    Partial_folder_path = Split_CS_path{1};
+    Complete_folder_path = [Drive_letter ':' Partial_folder_path '\']; %reconstruct path to account for possible changes in drive letters
+end
 Image_num = length(CS_results.zline_images); %determine total number of images
+
 TotalPixels_image = zeros(1,Image_num); %initialize variable
 ColoredPixels = zeros(1,Image_num); %initialize variable
 for i=1:Image_num
