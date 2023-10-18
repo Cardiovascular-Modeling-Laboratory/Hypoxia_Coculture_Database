@@ -8,8 +8,8 @@ Complete_folder_path = [Drive_letter ':' Partial_folder_path]; %reconstruct path
 if exist(Complete_folder_path,'dir') == 7
 else %change path to reflect CS summary file path if image cannot be located
     clear Partial_folder_path Complete_folder_path
-    Split_CS_path = fileparts(CS_path);
-    Partial_folder_path = Split_CS_path{1};
+    [Split_CS_path, ~, ~] = fileparts(CS_path);
+    Partial_folder_path = Split_CS_path;
     Complete_folder_path = [Drive_letter ':' Partial_folder_path '\']; %reconstruct path to account for possible changes in drive letters
 end
 Image_num = length(CS_results.zline_images); %determine total number of images
