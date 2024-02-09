@@ -22,18 +22,22 @@ for i=1:Image_num
     Folder_path_zsk = [Complete_folder_path Image_filename_zsk_partial '\']; %folder path of zline skeleton image
     Image_path_zsk = [Folder_path_zsk Image_filename_zsk]; %absolute path of zline skeleton image
     Image_read_zsk = imread(Image_path_zsk); %read zline skeleton image
-    
+    Image_path_background = [Folder_path_zsk Image_filename_zsk_partial '_OrientationAnalysis.mat'];
+    load(Image_path_background,'im_struct')
+    Background = im_struct.background;
+
     [rows, columns, colorchannels] = size(Image_read); %determine total number of vertical and horizontal pixels and number of color channels
-    Overlay_image = im2double(Image_read).*im2double(Image_read_zsk);
+    Overlay_image = im2double(Image_read).*double(Image_read_zsk).*double(Background); %overlay of original image, z-line skeleton, and background estimation image (from _OrientationAnalysis output)
+    Original_image = im2double(Image_read).*double(Background); %overaly of original image and background estimation image
     if colorchannels == 1
         Overlay_int_image(i) = sum(sum(Overlay_image)); %integral of pixel color values over overlaid image
-        AA_int_image(i) = sum(sum(Image_read))./double(max(max(Image_read))); %integral of pixel color values over mCherry image normalized by maximum pixel value
+        AA_int_image(i) = sum(sum(Original_image)); %integral of pixel color values over mCherry overlaid with estimated background
     else
         Overlay_int_image(i) = sum(sum(sum(Overlay_image)));
-        AA_int_image(i) = sum(sum(sum(Image_read)))./double(max(max(max(Image_read)))); %integral of pixel color values over mCherry image normalized by maximum pixel value
+        AA_int_image(i) = sum(sum(sum(Original_image))); %integral of pixel color values over mCherry image normalized by maximum pixel value
     end
     
-    clear Image_filename Image_path Image_read rows columns colorchannels Image_read_zsk Image_filename_zsk Image_path_zsk Overlay_image
+    clear Image_filename Image_path Image_read rows columns colorchannels Image_read_zsk Image_filename_zsk Image_path_zsk Overlay_image Original_image Image_path_background im_struct Background
 end
 Overlay_int = sum(Overlay_int_image);
 AA_int = sum(AA_int_image);
