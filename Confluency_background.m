@@ -29,7 +29,7 @@ for i=1:Image_num
     TotalPixels_image(i) = rows*columns; %total number of pixels (black + white)
     Background_double = double(Background);
     ColoredPixels(i) = length(find(Background_double==1));
-    clear Image_filename Image_path Image_filename_partial Image_filename_background Folder_path_background Image_path_background TotalPixels_image BlackPixels numBlackPixels rows columns colorchannels Background Background_double
+    clear Image_filename Image_path Image_filename_partial Image_filename_background Folder_path_background Image_path_background BlackPixels numBlackPixels rows columns colorchannels Background Background_double
 end
 TotalPixels = sum(TotalPixels_image); %total number of pixels
 TotalPixels_AA = sum(ColoredPixels); %total number of colored pixels
