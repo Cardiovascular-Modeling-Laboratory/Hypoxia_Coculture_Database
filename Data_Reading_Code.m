@@ -106,12 +106,12 @@ for j=1:Num_Sdata %loop through each entry with structural data
     [Image_folder_path, ~, ~] = fileparts(Partial_path); 
     Image_Analysis_Output = [Current_drive{1} ':' Image_folder_path '\Image_Analysis_Outputs.mat']; %filename for image analysis output
     if exist(Image_Analysis_Output,'file') == 0 %file with saved image analysis outputs does not exist
-        [TotalPixels, TotalPixels_AA] = Confluency_background(CS_results,Current_drive{1},Pathfiles_vec(Struct_data(j)));
+        [TotalPixels, TotalPixels_AA] = Confluency_background(CS_results,Current_drive{1},char(Pathfiles_vec(Struct_data(j))));
         Well_Data_Set_ZLD(j).Total_Pixels = TotalPixels;
         Well_Data_Set_ZLD(j).AA_Pixels = TotalPixels_AA;
         AA_Confluency = (TotalPixels_AA/TotalPixels)*100;
         Well_Data_Set_ZLD(j).AA_Confluency = AA_Confluency;
-        [Overlay_int, AA_int] = Diffusefrac_mCherry(CS_results,Current_drive{1},Pathfiles_vec(Struct_data(j)));
+        [Overlay_int, AA_int] = Diffusefrac_mCherry(CS_results,Current_drive{1},char(Pathfiles_vec(Struct_data(j))));
         shadow = 1; %shadow of signal around zline in microns
         Diffuse_AA_Fraction = 1-(Overlay_int*shadow*settings.pix2um/AA_int);
         Well_Data_Set_ZLD(j).Diffuse_AA_Fraction = Diffuse_AA_Fraction;
