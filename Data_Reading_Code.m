@@ -104,9 +104,9 @@ for j=1:Num_Sdata %loop through each entry with structural data
     Well_Data_Set_ZLD(j).ContL_Mean = CS_results.CS_means;
     
     [Image_folder_path, ~, ~] = fileparts(Partial_path); 
-    Image_Analysis_Output = [Current_drive{1} ':' Image_folder_path '\Image_Analysis_Outputs_' char(AnalysisID_vec(Struct_data(j))) '.mat']; %filename for image analysis output
+    Image_Analysis_Output = [Current_drive{1} ':' Image_folder_path '\Image_Analysis_Outputs.mat']; %filename for image analysis output
     if exist(Image_Analysis_Output,'file') == 0 %file with saved image analysis outputs does not exist
-        [TotalPixels, TotalPixels_AA] = pixelcount_mCherry(CS_results,Current_drive{1},Pathfiles_vec(Struct_data(j)));
+        [TotalPixels, TotalPixels_AA] = Confluency_background(CS_results,Current_drive{1},Pathfiles_vec(Struct_data(j)));
         Well_Data_Set_ZLD(j).Total_Pixels = TotalPixels;
         Well_Data_Set_ZLD(j).AA_Pixels = TotalPixels_AA;
         AA_Confluency = (TotalPixels_AA/TotalPixels)*100;
