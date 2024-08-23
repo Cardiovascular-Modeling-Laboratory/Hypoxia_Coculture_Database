@@ -13,7 +13,7 @@ clear; clc;
 %Generate a time stamp for the file name
 c = datetime;
 cc = datevec(c);
-time_stamp = [num2str(cc(1)) '_' num2str(cc(2)) '_' num2str(cc(3)) '_' num2str(cc(4)) '_' num2str(cc(5)) '_' num2str(round(cc(6)))];
+time_stamp2 = [num2str(cc(1)) '_' num2str(cc(2)) '_' num2str(cc(3)) '_' num2str(cc(4)) '_' num2str(cc(5)) '_' num2str(round(cc(6)))];
 
 [filename_loc, loc_path] = ...
     uigetfile('*.mat','Select the .mat file with the condition and location data (i.e. Data_Locations)','C:\Users\Grosberg CML\Documents\Nida_Database');
