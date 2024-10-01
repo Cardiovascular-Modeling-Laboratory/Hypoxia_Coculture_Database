@@ -159,7 +159,7 @@ Contract_data = find(contains(string(DataType_vec),'Cont')); %rows from Location
 Num_Cdata = length(Contract_data); %total number of contractility data files
 
 if Num_Cdata ~=0
-    Film_Data_Set = Contractility_Data_Extraction_7_29_24(AnalysisID_vec,WellID_vec,StudyType_vec,MediaType_vec,CellType_vec,NRVM_vec,BMDM_vec,Protocol_vec,SeedDate_vec,DataType_vec,FoldNum_vec,WellLetter_vec,Pathfiles_vec,UDO_vec,Drive_num,Split_drive_path); %run function to extract film data 
+    Film_Data_Set = Contractility_Data_Extraction(AnalysisID_vec,WellID_vec,StudyType_vec,MediaType_vec,CellType_vec,NRVM_vec,BMDM_vec,Protocol_vec,SeedDate_vec,DataType_vec,FoldNum_vec,WellLetter_vec,Pathfiles_vec,UDO_vec,Drive_num,Split_drive_path); %run function to extract film data 
     Film_Well_ID_vec = string({Film_Data_Set.WellID});
     Film_Side_vec = string({Film_Data_Set.Top_Bottom});
     Cond_vec = string({Film_Data_Set.Cond_Name});
