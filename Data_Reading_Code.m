@@ -69,7 +69,7 @@ for j=1:Num_Sdata %loop through each entry with structural data
     Well_Data_Set_ZLD(j).Protocol = Protocol_vec{Struct_data(j)};
     Well_Data_Set_ZLD(j).Seed_Date = SeedDate_vec{Struct_data(j)};
     Well_Data_Set_ZLD(j).Well_Letter = WellLetter_vec(Struct_data(j));
-    Well_Data_Set_ZLD(j).Data_Type = DataType_vec(Struct_data(j));
+    Well_Data_Set_ZLD(j).Data_Type = DataType_vec{Struct_data(j)};
     Well_Data_Set_ZLD(j).DataFold_Num = FoldNum_vec(Struct_data(j));
     Well_Data_Set_ZLD(j).UseData = UseData_vec(Struct_data(j));
     Well_Data_Set_ZLD(j).Notes = Notes_vec(Struct_data(j));
@@ -159,7 +159,7 @@ Contract_data = find(contains(string(DataType_vec),'Cont')); %rows from Location
 Num_Cdata = length(Contract_data); %total number of contractility data files
 
 if Num_Cdata ~=0
-    Film_Data_Set = Contractility_Data_Extraction(AnalysisID_vec,WellID_vec,StudyType_vec,MediaType_vec,CellType_vec,NRVM_vec,BMDM_vec,Protocol_vec,SeedDate_vec,DataType_vec,FoldNum_vec,WellLetter_vec,Pathfiles_vec,UDO_vec,Drive_num,Split_drive_path); %run function to extract film data 
+    Film_Data_Set = Contractility_Data_Extraction_7_29_24(AnalysisID_vec,WellID_vec,StudyType_vec,MediaType_vec,CellType_vec,NRVM_vec,BMDM_vec,Protocol_vec,SeedDate_vec,DataType_vec,FoldNum_vec,WellLetter_vec,Pathfiles_vec,UDO_vec,Drive_num,Split_drive_path); %run function to extract film data 
     Film_Well_ID_vec = string({Film_Data_Set.WellID});
     Film_Side_vec = string({Film_Data_Set.Top_Bottom});
     Cond_vec = string({Film_Data_Set.Cond_Name});
@@ -249,47 +249,48 @@ if Num_Cdata ~=0
     
     %Ask to change relative film numbers
     Film_Num_Action = input("Would you like to change the number designated for any film? 0=No, 1=Yes:");
-    while Film_Num_Action == 1
-        Table = struct2table(Film_Data_Set,"AsArray",true);
-        disp('Control will now be given to the user'); disp('In the MATLAB workspace, double click on the value of Table to see the updated list of entries'); disp('Back in the editor, press continue to resume running the code, where you will be prompted to enter a row number')
-        keyboard
-        Film_Num_Row = input('Select a row of the film you want to change the number of.\nYOU ONLY NEED TO SELECT A SINGLE FILM ROW FOR A GIVEN FILM AND DATA FILE, ALL OTHER ROWS OF THAT FILM (WITHIN THE SAME DATA FILE) WILL BE CHANGED AUTOMATICALLY:');
-        NotesTextFilmNum = input('Explain why you are changing the film number:',"s");
-        Film_Num_ID = char(Film_Data_Set(Film_Num_Row).WellID); %Well ID of selected film
-        Film_Num_Side = Film_Data_Set(Film_Num_Row).Top_Bottom; %film side designation of selected film
-        Film_Num_Old = Film_Data_Set(Film_Num_Row).FilmNum_Side; %existing relative film number of selected film
-        Film_Num_Abs = Film_Data_Set(Film_Num_Row).Film_Abs_Num; %absolute film number for selected film, use this for changes as it remains constant
-        FilmNum_Set_Rows = find(strcmp(Film_Well_ID_vec,Film_Num_ID) & Film_Side_vec==Film_Num_Side & Film_Abs_vec==Film_Num_Abs); %find all data rows for selected film
-        Film_Num_New = input('Enter the new relative number for this film:'); %new film number
-        for k=1:length(FilmNum_Set_Rows) %cycle through each data row for selected film
-            Film_Data_Set(FilmNum_Set_Rows(k)).FilmNum_Side = Film_Num_New;
-            Film_Data_Set(FilmNum_Set_Rows(k)).Film_ID = [char(Film_Data_Set(FilmNum_Set_Rows(k)).Analysis_ID) '_' Film_Data_Set(FilmNum_Set_Rows(k)).Cond_Name '_' char(Film_Data_Set(FilmNum_Set_Rows(k)).Top_Bottom) '_' num2str(Film_Data_Set(FilmNum_Set_Rows(k)).FilmNum_Side)];
-            Film_Data_Set(FilmNum_Set_Rows(k)).Adjusted_FilmNum = 1;
-            if double(isempty(Film_Data_Set(FilmNum_Set_Rows(k)).Notes)) == 1 %notes column is empty
-                Film_Data_Set(FilmNum_Set_Rows(k)).Notes = NotesTextFilmNum;
-            else
-                Film_Data_Set(FilmNum_Set_Rows(k)).Notes = {Film_Data_Set(FilmNum_Set_Rows(k)).Notes NotesTextFilmNum};
-                Film_Data_Set(FilmNum_Set_Rows(k)).Notes = strjoin(Film_Data_Set(FilmNum_Set_Rows(k)).Notes, '. '); %combine currently entered text with previous text to avoid overwriting
+    if Film_Num_Action == 1
+        while Film_Num_Action == 1
+            Table = struct2table(Film_Data_Set,"AsArray",true);
+            disp('Control will now be given to the user'); disp('In the MATLAB workspace, double click on the value of Table to see the updated list of entries'); disp('Back in the editor, press continue to resume running the code, where you will be prompted to enter a row number')
+            keyboard
+            Film_Num_Row = input('Select a row of the film you want to change the number of.\nYOU ONLY NEED TO SELECT A SINGLE FILM ROW FOR A GIVEN FILM AND DATA FILE, ALL OTHER ROWS OF THAT FILM (WITHIN THE SAME DATA FILE) WILL BE CHANGED AUTOMATICALLY:');
+            NotesTextFilmNum = input('Explain why you are changing the film number:',"s");
+            Film_Num_ID = char(Film_Data_Set(Film_Num_Row).WellID); %Well ID of selected film
+            Film_Num_Side = Film_Data_Set(Film_Num_Row).Top_Bottom; %film side designation of selected film
+            Film_Num_Old = Film_Data_Set(Film_Num_Row).FilmNum_Side; %existing relative film number of selected film
+            Film_Num_Abs = Film_Data_Set(Film_Num_Row).Film_Abs_Num; %absolute film number for selected film, use this for changes as it remains constant
+            FilmNum_Set_Rows = find(strcmp(Film_Well_ID_vec,Film_Num_ID) & Film_Side_vec==Film_Num_Side & Film_Abs_vec==Film_Num_Abs); %find all data rows for selected film
+            Film_Num_New = input('Enter the new relative number for this film:'); %new film number
+            for k=1:length(FilmNum_Set_Rows) %cycle through each data row for selected film
+                Film_Data_Set(FilmNum_Set_Rows(k)).FilmNum_Side = Film_Num_New;
+                Film_Data_Set(FilmNum_Set_Rows(k)).Film_ID = [char(Film_Data_Set(FilmNum_Set_Rows(k)).Analysis_ID) '_' Film_Data_Set(FilmNum_Set_Rows(k)).Cond_Name '_' char(Film_Data_Set(FilmNum_Set_Rows(k)).Top_Bottom) '_' num2str(Film_Data_Set(FilmNum_Set_Rows(k)).FilmNum_Side)];
+                Film_Data_Set(FilmNum_Set_Rows(k)).Adjusted_FilmNum = 1;
+                if double(isempty(Film_Data_Set(FilmNum_Set_Rows(k)).Notes)) == 1 %notes column is empty
+                    Film_Data_Set(FilmNum_Set_Rows(k)).Notes = NotesTextFilmNum;
+                else
+                    Film_Data_Set(FilmNum_Set_Rows(k)).Notes = {Film_Data_Set(FilmNum_Set_Rows(k)).Notes NotesTextFilmNum};
+                    Film_Data_Set(FilmNum_Set_Rows(k)).Notes = strjoin(Film_Data_Set(FilmNum_Set_Rows(k)).Notes, '. '); %combine currently entered text with previous text to avoid overwriting
+                end
             end
+            %Keep log of changes
+            Film_Num_Changes(film_num_changes_counter).WellID = Film_Num_ID;
+            Film_Num_Changes(film_num_changes_counter).Top_Bottom = Film_Num_Side;
+            Film_Num_Changes(film_num_changes_counter).Film_Num_Abs = Film_Num_Abs;
+            Film_Num_Changes(film_num_changes_counter).FilmNum_Side_Old = Film_Num_Old;
+            Film_Num_Changes(film_num_changes_counter).FilmNum_Side_New = Film_Num_New;
+            Film_Num_Changes(film_num_changes_counter).FilePath = char(Film_Data_Set(Film_Num_Row).PathFiles);
+            Film_Num_Changes(film_num_changes_counter).Notes_Added = NotesTextFilmNum;
+            c = datetime;
+            cc = datevec(c);
+            time_stamp_film = [num2str(cc(1)) '_' num2str(cc(2)) '_' num2str(cc(3)) '_' num2str(cc(4)) '_' num2str(cc(5)) '_' num2str(round(cc(6)))];
+            Film_Num_Changes(film_num_changes_counter).Timestamp = time_stamp_film;
+            film_num_changes_counter = film_num_changes_counter + 1;
+
+            Film_Num_Action = input('Are there any other films that you want to change the number for? 0=No, 1=Yes:');
         end
-        %Keep log of changes
-        Film_Num_Changes(film_num_changes_counter).WellID = Film_Num_ID;
-        Film_Num_Changes(film_num_changes_counter).Top_Bottom = Film_Num_Side;
-        Film_Num_Changes(film_num_changes_counter).Film_Num_Abs = Film_Num_Abs;
-        Film_Num_Changes(film_num_changes_counter).FilmNum_Side_Old = Film_Num_Old;
-        Film_Num_Changes(film_num_changes_counter).FilmNum_Side_New = Film_Num_New;
-        Film_Num_Changes(film_num_changes_counter).FilePath = char(Film_Data_Set(Film_Num_Row).PathFiles);
-        Film_Num_Changes(film_num_changes_counter).Notes_Added = NotesTextFilmNum;
-        c = datetime;
-        cc = datevec(c);
-        time_stamp_film = [num2str(cc(1)) '_' num2str(cc(2)) '_' num2str(cc(3)) '_' num2str(cc(4)) '_' num2str(cc(5)) '_' num2str(round(cc(6)))];
-        Film_Num_Changes(film_num_changes_counter).Timestamp = time_stamp_film;
-        film_num_changes_counter = film_num_changes_counter + 1;
-        
-        Film_Num_Action = input('Are there any other films that you want to change the number for? 0=No, 1=Yes:');
+        save(filename_film,'Film_Num_Changes') %save as .mat file
     end
-    Film_Num_vec = cell2mat({Film_Data_Set.FilmNum_Side}); %update to account for changes
-    save(filename_film,'Film_Num_Changes') %save as .mat file
 
     %Final check for duplicates in Film ID (place before primacy assignment to avoid issues in primacy)
     clear B ib RowValuesb
@@ -329,83 +330,86 @@ if Num_Cdata ~=0
 
     %Ask if user wants to change UseData designation
     UseDataAction = input('Are there any contractility records for which you would like to change the UseData designation? 0=No, 1=Yes:');
-    while UseDataAction == 1 %allow user to loop through and select multiple rows
-        Table = struct2table(Film_Data_Set,"AsArray",true);
-        disp('Control will now be given to the user'); disp('In the MATLAB workspace, double click on the value of Table to see the updated list of entries'); disp('Back in the editor, press continue to resume running the code, where you will be prompted to enter a row number')
-        keyboard
-        UseDataChangeRow = input('Select the row of the entry you want to change the UseData designation for:');
-        UseData_ID = char(Film_Data_Set(UseDataChangeRow).WellID); %Well ID of selected data row
-        UseData_Side = Film_Data_Set(UseDataChangeRow).Top_Bottom; %film side designation of selected film
-        UseData_Abs = Film_Data_Set(UseDataChangeRow).Film_Abs_Num; %absolute film number for selected film, use this for changes as it remains constant
-        UseDataValue_Old = Film_Data_Set(UseDataChangeRow).UseData;
-        UseDataValue_Cond = Film_Data_Set(UseDataChangeRow).Cond_Name; %to keep track of changes
-        if UseDataValue_Old == 0
-            Film_Data_Set(UseDataChangeRow).UseData = 1; %automatically flip UseData, without need for user input
-            NotesTextDNU = {};
-        elseif UseDataValue_Old == 1
-            Film_Data_Set(UseDataChangeRow).UseData = 0; %automatically flip UseData, without need for user input
-            NotesTextDNU = input('Explain why you do not want to use this data:',"s");
-            if double(isempty(Film_Data_Set(UseDataChangeRow).Notes)) == 1 %notes column is empty
-                Film_Data_Set(UseDataChangeRow).Notes = NotesTextDNU;
+    if UseDataAction == 1
+        while UseDataAction == 1 %allow user to loop through and select multiple rows
+            Table = struct2table(Film_Data_Set,"AsArray",true);
+            disp('Control will now be given to the user'); disp('In the MATLAB workspace, double click on the value of Table to see the updated list of entries'); disp('Back in the editor, press continue to resume running the code, where you will be prompted to enter a row number')
+            keyboard
+            UseDataChangeRow = input('Select the row of the entry you want to change the UseData designation for:');
+            UseData_ID = char(Film_Data_Set(UseDataChangeRow).WellID); %Well ID of selected data row
+            UseData_Side = Film_Data_Set(UseDataChangeRow).Top_Bottom; %film side designation of selected film
+            UseData_Abs = Film_Data_Set(UseDataChangeRow).Film_Abs_Num; %absolute film number for selected film, use this for changes as it remains constant
+            UseDataValue_Old = Film_Data_Set(UseDataChangeRow).UseData;
+            UseDataValue_Cond = Film_Data_Set(UseDataChangeRow).Cond_Name; %to keep track of changes
+            if UseDataValue_Old == 0
+                Film_Data_Set(UseDataChangeRow).UseData = 1; %automatically flip UseData, without need for user input
+                NotesTextDNU = {};
+            elseif UseDataValue_Old == 1
+                Film_Data_Set(UseDataChangeRow).UseData = 0; %automatically flip UseData, without need for user input
+                NotesTextDNU = input('Explain why you do not want to use this data:',"s");
+                if double(isempty(Film_Data_Set(UseDataChangeRow).Notes)) == 1 %notes column is empty
+                    Film_Data_Set(UseDataChangeRow).Notes = NotesTextDNU;
+                else
+                    Film_Data_Set(UseDataChangeRow).Notes = {Film_Data_Set(UseDataChangeRow).Notes NotesTextDNU};
+                    Film_Data_Set(UseDataChangeRow).Notes = strjoin(Film_Data_Set(UseDataChangeRow).Notes, '. '); %combine currently entered text with previous text to avoid overwriting
+                end
             else
-                Film_Data_Set(UseDataChangeRow).Notes = {Film_Data_Set(UseDataChangeRow).Notes NotesTextDNU};
-                Film_Data_Set(UseDataChangeRow).Notes = strjoin(Film_Data_Set(UseDataChangeRow).Notes, '. '); %combine currently entered text with previous text to avoid overwriting
             end
-        else
-        end
-        %Keep log of changes
-        UseData_Changes(UseData_changes_counter).WellID = UseData_ID;
-        UseData_Changes(UseData_changes_counter).Cond_Name = UseDataValue_Cond;
-        UseData_Changes(UseData_changes_counter).Top_Bottom = UseData_Side;
-        UseData_Changes(UseData_changes_counter).Film_Num_Abs = UseData_Abs;
-        UseData_Changes(UseData_changes_counter).FilePath = char(Film_Data_Set(UseDataChangeRow).PathFiles);
-        UseData_Changes(UseData_changes_counter).UseData_New = 1 - UseDataValue_Old;
-        UseData_Changes(UseData_changes_counter).Notes_Added = NotesTextDNU;
-        c = datetime;
-        cc = datevec(c);
-        time_stamp_UseData = [num2str(cc(1)) '_' num2str(cc(2)) '_' num2str(cc(3)) '_' num2str(cc(4)) '_' num2str(cc(5)) '_' num2str(round(cc(6)))];
-        UseData_Changes(UseData_changes_counter).Timestamp = time_stamp_UseData;
-        UseData_changes_counter = UseData_changes_counter + 1;
+            %Keep log of changes
+            UseData_Changes(UseData_changes_counter).WellID = UseData_ID;
+            UseData_Changes(UseData_changes_counter).Cond_Name = UseDataValue_Cond;
+            UseData_Changes(UseData_changes_counter).Top_Bottom = UseData_Side;
+            UseData_Changes(UseData_changes_counter).Film_Num_Abs = UseData_Abs;
+            UseData_Changes(UseData_changes_counter).FilePath = char(Film_Data_Set(UseDataChangeRow).PathFiles);
+            UseData_Changes(UseData_changes_counter).UseData_New = 1 - UseDataValue_Old;
+            UseData_Changes(UseData_changes_counter).Notes_Added = NotesTextDNU;
+            c = datetime;
+            cc = datevec(c);
+            time_stamp_UseData = [num2str(cc(1)) '_' num2str(cc(2)) '_' num2str(cc(3)) '_' num2str(cc(4)) '_' num2str(cc(5)) '_' num2str(round(cc(6)))];
+            UseData_Changes(UseData_changes_counter).Timestamp = time_stamp_UseData;
+            UseData_changes_counter = UseData_changes_counter + 1;
 
-        UseDataAction = input('Are there any other records that you want to change the UseData designation for? 0=No, 1=Yes:');
+            UseDataAction = input('Are there any other records that you want to change the UseData designation for? 0=No, 1=Yes:');
+        end
+        save(filename_UseData,'UseData_Changes') %save as .mat file
     end
-    save(filename_UseData,'UseData_Changes') %save as .mat file
 
     %Ask if the user would like to add any notes/additional notes
     NotesAction = input('Would you like to enter notes/additional notes for any entry in the database? 0=No, 1=Yes:');
-    while NotesAction == 1 %allow user to loop through and select multiple rows
-        Table = struct2table(Film_Data_Set,"AsArray",true);
-        disp('Control will now be given to the user'); disp('In the MATLAB workspace, double click on the value of Table to see the updated list of entries'); disp('Back in the editor, press continue to resume running the code, where you will be prompted to enter a row number')
-        keyboard
-        NotesRow = input('Select the row of the entry you would like to enter notes for:');
-        NotesText = input('Type in the text you would like to enter:',"s");
-        Notes_ID = char(Film_Data_Set(NotesRow).WellID); %Well ID of selected data row
-        Notes_Side = Film_Data_Set(NotesRow).Top_Bottom; %film side designation of selected data row
-        Notes_Abs = Film_Data_Set(NotesRow).Film_Abs_Num; %absolute film number for selected data row, use this for changes as it remains constant
-        Notes_Cond = Film_Data_Set(NotesRow).Cond_Name; %to keep track of changes
-        if double(isempty(Film_Data_Set(NotesRow).Notes)) == 1 %notes column is empty
-            Film_Data_Set(NotesRow).Notes = NotesText;
-        else
-            Film_Data_Set(NotesRow).Notes = {Film_Data_Set(NotesRow).Notes NotesText};
-            Film_Data_Set(NotesRow).Notes = strjoin(Film_Data_Set(NotesRow).Notes, '. '); %combine currently entered text with previous text to avoid overwriting
+    if NotesAction == 1
+        while NotesAction == 1 %allow user to loop through and select multiple rows
+            Table = struct2table(Film_Data_Set,"AsArray",true);
+            disp('Control will now be given to the user'); disp('In the MATLAB workspace, double click on the value of Table to see the updated list of entries'); disp('Back in the editor, press continue to resume running the code, where you will be prompted to enter a row number')
+            keyboard
+            NotesRow = input('Select the row of the entry you would like to enter notes for:');
+            NotesText = input('Type in the text you would like to enter:',"s");
+            Notes_ID = char(Film_Data_Set(NotesRow).WellID); %Well ID of selected data row
+            Notes_Side = Film_Data_Set(NotesRow).Top_Bottom; %film side designation of selected data row
+            Notes_Abs = Film_Data_Set(NotesRow).Film_Abs_Num; %absolute film number for selected data row, use this for changes as it remains constant
+            Notes_Cond = Film_Data_Set(NotesRow).Cond_Name; %to keep track of changes
+            if double(isempty(Film_Data_Set(NotesRow).Notes)) == 1 %notes column is empty
+                Film_Data_Set(NotesRow).Notes = NotesText;
+            else
+                Film_Data_Set(NotesRow).Notes = {Film_Data_Set(NotesRow).Notes NotesText};
+                Film_Data_Set(NotesRow).Notes = strjoin(Film_Data_Set(NotesRow).Notes, '. '); %combine currently entered text with previous text to avoid overwriting
+            end
+            %Keep log of changes
+            Notes_Changes(Notes_changes_counter).WellID = Notes_ID;
+            Notes_Changes(Notes_changes_counter).Cond_Name = Notes_Cond;
+            Notes_Changes(Notes_changes_counter).Top_Bottom = Notes_Side;
+            Notes_Changes(Notes_changes_counter).Film_Num_Abs = Notes_Abs;
+            Notes_Changes(Notes_changes_counter).FilePath = char(Film_Data_Set(NotesRow).PathFiles);
+            Notes_Changes(Notes_changes_counter).Notes_Added = NotesText;
+            c = datetime;
+            cc = datevec(c);
+            time_stamp_notes = [num2str(cc(1)) '_' num2str(cc(2)) '_' num2str(cc(3)) '_' num2str(cc(4)) '_' num2str(cc(5)) '_' num2str(round(cc(6)))];
+            Notes_Changes(Notes_changes_counter).Timestamp = time_stamp_notes;
+            Notes_changes_counter = Notes_changes_counter + 1;
+
+            NotesAction = input('Are there any other records that you would like to enter notes/additional notes for? 0=No, 1=Yes:');
         end
-        %Keep log of changes
-        Notes_Changes(Notes_changes_counter).WellID = Notes_ID;
-        Notes_Changes(Notes_changes_counter).Cond_Name = Notes_Cond;
-        Notes_Changes(Notes_changes_counter).Top_Bottom = Notes_Side;
-        Notes_Changes(Notes_changes_counter).Film_Num_Abs = Notes_Abs;
-        Notes_Changes(Notes_changes_counter).FilePath = char(Film_Data_Set(NotesRow).PathFiles);
-        Notes_Changes(Notes_changes_counter).Notes_Added = NotesText;
-        c = datetime;
-        cc = datevec(c);
-        time_stamp_notes = [num2str(cc(1)) '_' num2str(cc(2)) '_' num2str(cc(3)) '_' num2str(cc(4)) '_' num2str(cc(5)) '_' num2str(round(cc(6)))];
-        Notes_Changes(Notes_changes_counter).Timestamp = time_stamp_notes;
-        Notes_changes_counter = Notes_changes_counter + 1;
-
-        NotesAction = input('Are there any other records that you would like to enter notes/additional notes for? 0=No, 1=Yes:');
+        save(filename_Notes,'Notes_Changes') %save as .mat file
     end
-    save(filename_Notes,'Notes_Changes') %save as .mat file
-
 
     %Generate outputs
     Film_Data_Set = rmfield(Film_Data_Set,'PathFiles');
